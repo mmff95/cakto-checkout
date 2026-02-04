@@ -5,6 +5,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   required?: boolean;
   error?: boolean;
   errorMessage?: string;
+  mask?: string;
   className?: string;
   inputClassName?: string;
 }
