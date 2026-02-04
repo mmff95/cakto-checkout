@@ -2,7 +2,7 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button, Container } from "@/components/ui";
 import {
   CheckoutProductCard,
@@ -29,6 +29,8 @@ const defaultValues: CheckoutFormValues = {
 };
 
 export const CheckoutForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const methods = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues,
@@ -60,7 +62,8 @@ export const CheckoutForm = () => {
       ? `Você economiza ${formatBRL(summary.pixSavings)} com PIX`
       : null;
 
-  const handleSubmit = methods.handleSubmit((data: CheckoutFormValues) => {
+  const handleSubmit = methods.handleSubmit(async (data: CheckoutFormValues) => {
+    setIsSubmitting(true);
     const paymentType: PaymentType = data.paymentMethod === "pix" ? "PIX" : "CARD";
     const output: CheckoutOutput = {
       email: data.email,
@@ -69,6 +72,9 @@ export const CheckoutForm = () => {
       ...(data.paymentMethod === "card" && { installments: data.installments }),
     };
     console.log("checkout", output);
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    alert("Compra realizada com sucesso!");
   });
 
   return (
@@ -96,7 +102,7 @@ export const CheckoutForm = () => {
               recipientAmount={formatBRL(summary.producerNet)}
               savingsMessage={savingsMessage}
             />
-            <Button type="submit" fullWidth icon="🚀">
+            <Button type="submit" fullWidth icon="🚀" loading={isSubmitting}>
               Finalizar compra
             </Button>
           </div>
