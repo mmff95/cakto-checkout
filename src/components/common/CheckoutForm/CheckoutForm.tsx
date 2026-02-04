@@ -74,25 +74,32 @@ export const CheckoutForm = () => {
   return (
     <Container>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <CheckoutProductCard
-            title={PRODUCT_MOCK.name}
-            originalPrice={formatBRL(PRODUCT_MOCK.originalPrice)}
-            price={formatBRL(PRODUCT_MOCK.currentPrice)}
-          />
-          <CheckoutPersonalDataCard />
-          <CheckoutPaymentCard productPrice={productPrice} />
-          <CheckoutOrderSummaryCard
-            productAmount={summary.productAmount}
-            feeAmount={summary.feeAmount}
-            totalAmount={summary.totalAmount}
-            recipientName={PRODUCT_MOCK.producer}
-            recipientAmount={formatBRL(summary.producerNet)}
-            savingsMessage={savingsMessage}
-          />
-          <Button type="submit" fullWidth icon="🚀">
-            Finalizar compra
-          </Button>
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(320px,380px)] lg:items-start lg:gap-8"
+        >
+          <div className="flex flex-col gap-6">
+            <CheckoutProductCard
+              title={PRODUCT_MOCK.name}
+              originalPrice={formatBRL(PRODUCT_MOCK.originalPrice)}
+              price={formatBRL(PRODUCT_MOCK.currentPrice)}
+            />
+            <CheckoutPersonalDataCard />
+            <CheckoutPaymentCard productPrice={productPrice} />
+          </div>
+          <div className="flex flex-col gap-6 lg:sticky lg:top-6">
+            <CheckoutOrderSummaryCard
+              productAmount={summary.productAmount}
+              feeAmount={summary.feeAmount}
+              totalAmount={summary.totalAmount}
+              recipientName={PRODUCT_MOCK.producer}
+              recipientAmount={formatBRL(summary.producerNet)}
+              savingsMessage={savingsMessage}
+            />
+            <Button type="submit" fullWidth icon="🚀">
+              Finalizar compra
+            </Button>
+          </div>
         </form>
       </FormProvider>
     </Container>
