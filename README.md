@@ -14,7 +14,7 @@ O layout é responsivo (mobile-first, coluna única; em telas maiores, resumo e 
 
 ---
 
-## Transparência de Uso de IA (Obrigatório)
+## Transparência de Uso de IA
 
 **Como usei IA:** 
 
@@ -30,7 +30,7 @@ Além disso, revisei e ajustei manualmente qualquer código gerado quando necess
 
 ---
 
-## Regras de Negócio (Obrigatório)
+## Regras de Negócio
 
 - **Comprador paga sempre o preço fixo do produto:** 
 o valor exibido no resumo e cobrado do comprador é o preço do produto (ex.: R$ 100,00). Não há acréscimo para o comprador em nenhuma forma de pagamento.
