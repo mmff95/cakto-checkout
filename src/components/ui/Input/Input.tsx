@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useId } from "react";
 import {
   applyMask,
   getDigits,
@@ -24,7 +24,8 @@ export const Input = ({
   onChange,
   ...props
 }: InputProps) => {
-  const inputId = id ?? "input-" + Math.random().toString(36).slice(2, 9);
+  const generatedId = useId();
+  const inputId = id ?? "input-" + generatedId.replace(/:/g, "");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [internalValue, setInternalValue] = useState(() => {
@@ -119,7 +120,6 @@ export const Input = ({
           value: displayValue,
           onKeyDown: handleKeyDown,
           inputMode: "numeric" as const,
-          pattern: "[0-9]*",
           maxLength: mask.length,
         }
       : { value: valueProp, defaultValue }),
