@@ -2,7 +2,7 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button, Container } from "@/components/ui";
 import {
   CheckoutProductCard,
@@ -29,6 +29,8 @@ const defaultValues: CheckoutFormValues = {
 };
 
 export const CheckoutForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const methods = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues,
@@ -60,7 +62,8 @@ export const CheckoutForm = () => {
       ? `Você economiza ${formatBRL(summary.pixSavings)} com PIX`
       : null;
 
-  const handleSubmit = methods.handleSubmit((data: CheckoutFormValues) => {
+  const handleSubmit = methods.handleSubmit(async (data: CheckoutFormValues) => {
+    setIsSubmitting(true);
     const paymentType: PaymentType = data.paymentMethod === "pix" ? "PIX" : "CARD";
     const output: CheckoutOutput = {
       email: data.email,
@@ -69,30 +72,40 @@ export const CheckoutForm = () => {
       ...(data.paymentMethod === "card" && { installments: data.installments }),
     };
     console.log("checkout", output);
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSubmitting(false);
+    alert("Compra realizada com sucesso!");
   });
 
   return (
     <Container>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <CheckoutProductCard
-            title={PRODUCT_MOCK.name}
-            originalPrice={formatBRL(PRODUCT_MOCK.originalPrice)}
-            price={formatBRL(PRODUCT_MOCK.currentPrice)}
-          />
-          <CheckoutPersonalDataCard />
-          <CheckoutPaymentCard productPrice={productPrice} />
-          <CheckoutOrderSummaryCard
-            productAmount={summary.productAmount}
-            feeAmount={summary.feeAmount}
-            totalAmount={summary.totalAmount}
-            recipientName={PRODUCT_MOCK.producer}
-            recipientAmount={formatBRL(summary.producerNet)}
-            savingsMessage={savingsMessage}
-          />
-          <Button type="submit" fullWidth icon="🚀">
-            Finalizar compra
-          </Button>
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(320px,380px)] lg:items-start lg:gap-8"
+        >
+          <div className="flex flex-col gap-6">
+            <CheckoutProductCard
+              title={PRODUCT_MOCK.name}
+              originalPrice={formatBRL(PRODUCT_MOCK.originalPrice)}
+              price={formatBRL(PRODUCT_MOCK.currentPrice)}
+            />
+            <CheckoutPersonalDataCard />
+            <CheckoutPaymentCard productPrice={productPrice} />
+          </div>
+          <div className="flex flex-col gap-6 lg:sticky lg:top-6">
+            <CheckoutOrderSummaryCard
+              productAmount={summary.productAmount}
+              feeAmount={summary.feeAmount}
+              totalAmount={summary.totalAmount}
+              recipientName={PRODUCT_MOCK.producer}
+              recipientAmount={formatBRL(summary.producerNet)}
+              savingsMessage={savingsMessage}
+            />
+            <Button type="submit" fullWidth icon="🚀" loading={isSubmitting}>
+              Finalizar compra
+            </Button>
+          </div>
         </form>
       </FormProvider>
     </Container>
